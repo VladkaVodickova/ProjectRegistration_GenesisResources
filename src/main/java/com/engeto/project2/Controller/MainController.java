@@ -97,11 +97,38 @@ public class MainController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
     }
 
+    @PostMapping("/api/v1/user")
+    public ResponseEntity<String> createUser(@RequestBody UserInfo newUser) {
+        try (Connection con = getConnection()) {
+            int ID = getIdForNextUser();
+            UUID uuid = UUID.randomUUID();
 
+            String query = "INSERT INTO registrationinfo (ID, Name, Surname, PersonID, Uuid) VALUES (?, ?, ?, ?, ?);";
+            PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, ID);
+            statement.setString(2, newUser.getName());
+            statement.setString(3, newUser.getSurname());
+            statement.setString(4, newUser.getPersonId());
+            statement.setString(5, uuid.toString());
 
-    @PostMapping ("api/v1/user")
-    public String userCreation( ){
-        return "UserInfo saved!";
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    newUser.setId(generatedId);
+                    try {
+                        return ResponseEntity.ok(convertToJson(newUser));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while creating the user.");
     }
 
     private String convertToJson(Object data) throws JsonProcessingException {
@@ -117,5 +144,22 @@ public class MainController {
                  "EngetoJavaHeslo123*");
      }
 
+     private UUID randomUUID(){
+         return UUID.randomUUID();
+     }
+
+     private int getIdForNextUser() throws SQLException {
+         Connection con = getConnection();
+         String getMaxIdQuery = "SELECT MAX(ID) AS MaxID FROM registrationinfo;";
+         PreparedStatement getMaxIdStatement = con.prepareStatement(getMaxIdQuery);
+         ResultSet maxIdResult = getMaxIdStatement.executeQuery();
+
+         int nextId = 1;
+         if (maxIdResult.next()) {
+             int maxId = maxIdResult.getInt("MaxID");
+             nextId = maxId + 1;
+         }
+         return nextId;
+     }
 
 }
