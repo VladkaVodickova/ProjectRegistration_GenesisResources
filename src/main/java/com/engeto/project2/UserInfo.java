@@ -22,6 +22,14 @@ public class UserInfo {
         this.personId = personId;
     }
 
+    public UserInfo(int id, String name, String surname, String personId, UUID uuid) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.personId = personId;
+        this.uuid = uuid;
+    }
+
     public int getId() {
         return id;
     }
