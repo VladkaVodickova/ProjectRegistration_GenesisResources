@@ -9,12 +9,10 @@ public class UserInfo {
     private String personId;
     private UUID uuid;
 
-    public UserInfo(int id, String name, String surname, String personId, UUID uuid) {
+    public UserInfo(int id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.personId = personId;
-        this.uuid = uuid;
     }
 
     public UserInfo(int id, String name, String surname, String personId) {
