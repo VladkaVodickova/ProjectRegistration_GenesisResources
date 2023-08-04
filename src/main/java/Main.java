@@ -6,23 +6,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        try (
-                Connection con = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/Engeto_Project2_Registration",
-                        "root",
-                        "EngetoJavaHeslo123*")) {
-            Statement statement = con.createStatement();
-            statement.executeQuery(
-                    "SELECT * FROM registrationinfo;");
-            ResultSet result = statement.getResultSet();
-            while (result.next()) {
-                System.out.println(
-                        result.getString("name")
-                                + ": "
-                                + result.getInt("ID"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 }
