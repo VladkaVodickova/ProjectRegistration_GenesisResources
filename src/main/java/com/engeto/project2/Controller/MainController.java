@@ -101,7 +101,7 @@ public class MainController {
     public ResponseEntity<String> createUser(@RequestBody UserInfo newUser) {
         try (Connection con = getConnection()) {
             int ID = getIdForNextUser();
-            UUID uuid = UUID.randomUUID();
+            UUID uuid = randomUUID();
 
             String query = "INSERT INTO registrationinfo (ID, Name, Surname, PersonID, Uuid) VALUES (?, ?, ?, ?, ?);";
             PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -127,7 +127,6 @@ public class MainController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while creating the user.");
     }
 

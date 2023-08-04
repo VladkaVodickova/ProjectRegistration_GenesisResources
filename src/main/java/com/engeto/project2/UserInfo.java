@@ -14,8 +14,6 @@ public class UserInfo {
 
     @JsonProperty("surname")
     private String surname;
-
-    @JsonProperty("personID")
     private String personID;
 
 
@@ -57,7 +55,7 @@ public class UserInfo {
     public String getSurname() {
         return surname;
     }
-
+    @JsonProperty("personID")
     public String getPersonId() {
         return personID;
     }
