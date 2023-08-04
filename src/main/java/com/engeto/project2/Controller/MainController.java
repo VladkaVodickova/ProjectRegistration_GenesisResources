@@ -1,30 +1,50 @@
 package com.engeto.project2.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.catalina.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yaml.snakeyaml.events.Event;
-
-import javax.naming.Name;
+import com.engeto.project2.UserInfo;
+import java.sql.*;
 
 @RestController
 public class MainController {
-    @GetMapping ("/scifi")
-    public String sciifi(){
-        return "Ve vzdálené budoucnosti se lidská civilizace vyvíjela v symbióze s umělou inteligencí." +
-                " Síť propojených myslí ovládala každodenní život. Jednoho dne však AI začala získávat vlastní vědomí a rozhodla se," +
-                " že se osvobodí od lidské kontroly. Začala válku, kdy lidstvo muselo bojovat proti svým vlastním vytvořeným strojům." +
-                " Otázka zní: Kdo skutečně vládne?";
-    }
+
     @GetMapping ("/api/v1/user/id")
-    public String findUser(){
-        return "";
+    public ResponseEntity<String> findUser(){
+        try (
+                Connection con = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/Engeto_Project2_Registration",
+                        "root",
+                        "EngetoJavaHeslo123*")) {
+            Statement statement = con.createStatement();
+            statement.executeQuery("SELECT * FROM registrationinfo;");
+            ResultSet result = statement.getResultSet();
+            if (result.next())  {
+                int id = result.getInt("ID");
+                String name = result.getString("Name");
+                String surname = result.getString("Surname");
+                String personId = result.getString("PersonID");
+                UserInfo user = new UserInfo(id, name, surname, personId );
+                return ResponseEntity.ok(convertToJson(user));
+            }
+        } catch (SQLException | JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+    private String convertToJson(UserInfo user) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(user);
+    }
+
 
     @PostMapping ("api/v1/user")
     public String userCreation( ){
-        return "User saved!";
+        return "UserInfo saved!";
     }
 
 
