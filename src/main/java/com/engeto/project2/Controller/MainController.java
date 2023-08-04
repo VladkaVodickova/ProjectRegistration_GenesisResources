@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.engeto.project2.UserInfo;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -52,6 +54,49 @@ public class MainController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
     }
 
+    @GetMapping("/api/v1/users")
+    public ResponseEntity<String> findAllUsers(@RequestParam(value = "detail", defaultValue = "false") boolean detail) {
+        try (Connection con = getConnection()) {
+            String query;
+            if (detail) {
+                query = "SELECT * FROM registrationinfo;";
+            } else {
+                query = "SELECT ID, Name, Surname FROM registrationinfo;";
+            }
+            PreparedStatement statement = con.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+
+            List<UserInfo> users = new ArrayList<>();
+            while (result.next()) {
+                int id = result.getInt("ID");
+                String name = result.getString("Name");
+                String surname = result.getString("Surname");
+
+                if (detail) {
+                    String personId = result.getString("PersonId");
+                    UUID uuid = UUID.fromString(result.getString("Uuid"));
+                    users.add(new UserInfo(id, name, surname, personId, uuid));
+                } else {
+                    users.add(new UserInfo(id, name, surname));
+                }
+            }
+
+            if (!users.isEmpty()) {
+                try {
+                    return ResponseEntity.ok(convertToJson(users));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
+    }
+
 
 
     @PostMapping ("api/v1/user")
@@ -59,10 +104,10 @@ public class MainController {
         return "UserInfo saved!";
     }
 
-    private String convertToJson(UserInfo user) throws JsonProcessingException {
+    private String convertToJson(Object data) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return objectMapper.writeValueAsString(user);
+        return objectMapper.writeValueAsString(data);
     }
 
      private Connection getConnection () throws SQLException {
