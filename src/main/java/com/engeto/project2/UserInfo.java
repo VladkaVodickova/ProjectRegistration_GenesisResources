@@ -24,13 +24,6 @@ public class UserInfo {
         this.surname = surname;
     }
 
-    public UserInfo(int id, String name, String surname, String personID) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.personID = personID;
-    }
-
     @JsonCreator
     public UserInfo(
             int id,
