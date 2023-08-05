@@ -117,6 +117,7 @@ public class MainController {
                 if (generatedKeys.next()) {
                     int generatedId = generatedKeys.getInt(1);
                     newUser.setId(generatedId);
+                    newUser.setUuid(uuid);
                     try {
                         return ResponseEntity.ok(convertToJson(newUser));
                     } catch (JsonProcessingException e) {
@@ -128,6 +129,47 @@ public class MainController {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while creating the user.");
+    }
+
+    @PutMapping ("/api/v1/user")
+    public ResponseEntity<String> updateUser(@RequestBody UserInfo updatedUser){
+        try (Connection con = getConnection()) {
+            String query = "UPDATE registrationinfo SET Name = ?, Surname = ? WHERE ID = ?;";
+            PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, updatedUser.getName());
+            statement.setString(2, updatedUser.getSurname());
+            statement.setInt(3,updatedUser.getId());
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                try {
+                    return ResponseEntity.ok(convertToJson(updatedUser));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while updating the user.");
+    }
+
+    @DeleteMapping ("api/v1/user/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable ("id") int userId){
+        try (Connection con = getConnection()){
+            String query = "DELETE FROM registrationinfo WHERE ID = ?;";
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setInt(1, userId);
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                return ResponseEntity.status(HttpStatus.OK).body("User was deleted");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred");
     }
 
     private String convertToJson(Object data) throws JsonProcessingException {
