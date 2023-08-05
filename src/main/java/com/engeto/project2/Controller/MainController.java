@@ -99,10 +99,15 @@ public class MainController {
 
     @PostMapping("/api/v1/user")
     public ResponseEntity<String> createUser(@RequestBody UserInfo newUser) {
+        String personID = newUser.getPersonId();
+
+        if (checkUseOfPersonID(personID)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("PersonId is already being used.");
+        }
+
         try (Connection con = getConnection()) {
             int ID = getIdForNextUser();
             UUID uuid = randomUUID();
-
             String query = "INSERT INTO registrationinfo (ID, Name, Surname, PersonID, Uuid) VALUES (?, ?, ?, ?, ?);";
             PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, ID);
@@ -128,7 +133,7 @@ public class MainController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while creating the user.");
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while creating the user.");
     }
 
     @PutMapping ("/api/v1/user")
@@ -203,4 +208,18 @@ public class MainController {
          return nextId;
      }
 
+     private boolean checkUseOfPersonID(String personID) {
+         try (Connection con = getConnection()) {
+             String checkQuery = "SELECT COUNT(*) FROM registrationinfo WHERE PersonID = ?";
+             PreparedStatement checkStatement = con.prepareStatement(checkQuery);
+             checkStatement.setString(1, personID);
+             ResultSet resultSet = checkStatement.executeQuery();
+             resultSet.next();
+             int count = resultSet.getInt(1);
+             return count > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
