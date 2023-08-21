@@ -1,20 +1,14 @@
 package com.engeto.project2.controller;
 
 import com.engeto.project2.ErrorMessages;
-import com.engeto.project2.repository.UserRepository;
 import com.engeto.project2.service.UserService;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.engeto.project2.UserInfo;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
