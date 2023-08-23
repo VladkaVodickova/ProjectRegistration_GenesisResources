@@ -40,7 +40,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Mortimer\",\r\n    \"surname\": \"Varadinek\",\r\n    \"personID\": \"1975gjgh\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Kuba\",\r\n    \"surname\": \"Kubikula\",\r\n    \"personID\": \"4865sdfdssd\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -48,7 +48,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/user",
+					"raw": "http://localhost:8080/api/v1/users",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -57,7 +57,7 @@
 					"path": [
 						"api",
 						"v1",
-						"user"
+						"users"
 					]
 				}
 			},
@@ -69,7 +69,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/user/2?detail=true",
+					"raw": "http://localhost:8080/api/v1/users/2?detail=true",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -78,7 +78,7 @@
 					"path": [
 						"api",
 						"v1",
-						"user",
+						"users",
 						"2"
 					],
 					"query": [
@@ -98,7 +98,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Gábina\",\r\n    \"surname\": \"Novakova\",\r\n    \"id\":1\r\n}",
+					"raw": "{\r\n    \"name\": \"Gábina\",\r\n    \"surname\": \"Novakova\",\r\n    \"id\":4\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -106,7 +106,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/user",
+					"raw": "http://localhost:8080/api/v1/users",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -115,7 +115,7 @@
 					"path": [
 						"api",
 						"v1",
-						"user"
+						"users"
 					]
 				}
 			},
@@ -136,7 +136,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/user/1",
+					"raw": "http://localhost:8080/api/v1/users/9",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -145,8 +145,8 @@
 					"path": [
 						"api",
 						"v1",
-						"user",
-						"1"
+						"users",
+						"9"
 					]
 				}
 			},
